@@ -1,0 +1,9 @@
+! Touchstone file from project Dipole
+! Exported from ElectronicsDesktop 2018.0.0
+# GHZ S DB R 100.000000
+! Modal data exported
+! Port[1] = 1:1
+1                -0.117057        -30.9112         
+1.5              -0.590775        -54.6756         
+2                -3.44914         -98.5059         
+3                -7.36549         24.1741          

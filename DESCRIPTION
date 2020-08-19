@@ -1,0 +1,26 @@
+Type: Package
+Package: rftk
+Title: RF Toolkit
+Version: 0.1.0
+Authors@R: person("Aaron", "Anderson", email = "aaron.m.anderson.3@gmail.com", role = c("aut", "cre"))
+Description: R functions for working with RF/wireless data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: 
+  R (>= 3.6.0)
+Imports:
+	ggplot2,
+	tibble,
+	grid,
+	dplyr,
+	purrr,
+	readr,
+	tidyr,
+	janitor,
+	scales
+Suggests:
+	testthat
+LazyData: true
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
