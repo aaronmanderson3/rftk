@@ -158,7 +158,8 @@ read_snp <- function(...,
     
     # read all lines
     x <- readr::read_lines(file, 
-                           skip_empty_rows = T)
+                           skip_empty_rows = T) %>%
+      iconv(to = "UTF-8")
     
     # remove noise parameters
     noise_parameters_index = which(startsWith(x, "! NOISE PARAMETERS"))
