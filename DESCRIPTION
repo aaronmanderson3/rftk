@@ -1,7 +1,7 @@
 Type: Package
 Package: rftk
 Title: RF Toolkit
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: person("Aaron", "Anderson", email = "aaron.m.anderson.3@gmail.com", role = c("aut", "cre"))
 Description: R functions for working with RF/wireless data.
 License: MIT + file LICENSE
