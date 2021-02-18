@@ -46,7 +46,7 @@ CoordSmith <- ggproto(
   
   render_bg = function(self, panel_params, theme) {
     
-    scale <- 0.45
+    scale <- 0.4
     n_theta <- 100
     
     panel_params <- ggplot2:::rename_data(self, panel_params)
