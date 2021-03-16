@@ -78,16 +78,17 @@ get_column_names <- function(parameter = "S", numeric_format, num_parameters) {
 #' @keywords internal
 change_snp_numeric_type <- function(data, format) {
   
-  # coerce argument
+  # coerce arguments
   format <- toupper(format)
+  data_names <- toupper(colnames(data))
   
   if(!(format %in% c("MA","DB","RI")))
     stop("Invalid numeric format.  Supported formats are MA, DB, RI")
   
   old_format <- case_when(
-    all(c("Mag", "Ang") %in% colnames(data)) ~ "MA",
-    all(c("dB", "Ang") %in% colnames(data))  ~ "DB",
-    all(c("Re", "Im") %in% colnames(data))   ~ "RI")
+    all(c("MAG", "ANG") %in% data_names) ~ "MA",
+    all(c("DB", "ANG") %in% data_names)  ~ "DB",
+    all(c("RE", "IM") %in% data_names)   ~ "RI")
   
   if(is.na(old_format))
     stop("Invalid data")
