@@ -214,20 +214,8 @@ z_to_gamma <- function(..., z0 = 50) {
   else if(is.numeric(z0) & z0 < 0)
     stop("Characteristic impedance must be greater than zero")
   
-  x <- (z - z0) / (z + z0)
-  
-  # if the output is non-complex, take the absolute value
-  if(!is.complex(x))
-    x <- abs(x)
-  
-  x
+  (z - z0) / (z + z0)
 }
-
-
-
-
-
-
 
 
 #' @rdname impedance_conversion
