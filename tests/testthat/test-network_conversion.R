@@ -215,3 +215,19 @@ test_that("z transformations - results", {
 	z_to_t(z, z0 = 100) %>% expect_equal(expected$t_100, tolerance = 1e-4)
 	z_to_y(z)           %>% expect_equal(expected$y,     tolerance = 1)
 })
+
+S <- matrix(c(complex(modulus = 0.38, argument = -158 / 180 * pi),
+							complex(modulus = 0.11, argument = 54 / 180 * pi),
+							complex(modulus = 3.50, argument = 80 / 180 * pi),
+							complex(modulus = 0.40, argument = -43 / 180 * pi)), nrow = 2, byrow = TRUE)
+gamma_source <- -0.333
+gamma_load <- -0.111
+test_that("input/output gamma", {
+	gamma_in(S, gamma_load)    %>% expect_equal(complex(modulus = 0.365, argument = -152 / 180 * pi), tolerance = 1e-2)
+	gamma_out(S, gamma_source) %>% expect_equal(complex(modulus = 0.545, argument = -43  / 180 * pi), tolerance = 1e-2)
+})
+test_that("network_gain", {
+	available_gain(S, gamma_source) %>% expect_equal(19.8, tolerance = 0.1)
+	power_gain(S, gamma_load) %>% expect_equal(13.1, tolerance = 0.1)
+	transducer_gain(S, gamma_source, gamma_load) %>% expect_equal(12.6, tolerance = 0.1)
+})
