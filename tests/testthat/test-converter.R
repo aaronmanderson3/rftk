@@ -167,8 +167,8 @@ test_that("z_to_gamma - invalid input", {
 	expect_error(z_to_gamma(50 + 0i, z0 = -0.001 + 10i))
 })
 test_that("z_to_gamma - results (z0 = default)", {
-	z_to_gamma(1)   %>% expect_equal(0.9608, tolerance = 1e-3)
-	z_to_gamma(25)  %>% expect_equal(0.3333, tolerance = 1e-3)
+	z_to_gamma(1)   %>% expect_equal(-0.9608, tolerance = 1e-3)
+	z_to_gamma(25)  %>% expect_equal(-0.3333, tolerance = 1e-3)
 	z_to_gamma(50)  %>% expect_equal(0,      tolerance = 1e-3)
 	z_to_gamma(100) %>% expect_equal(0.3333, tolerance = 1e-3)
 	z_to_gamma(200) %>% expect_equal(0.6,    tolerance = 1e-3)
@@ -200,7 +200,7 @@ test_that("z_to_gamma - results (z0 = default)", {
 	z_to_gamma(500 + -500i) %>% expect_equal(complex(modulus = 0.905,  argument = -5.739 / 180 * pi), tolerance = 1e-3)
 })
 test_that("z_to_gamma - results (z0 = 100)", {
-	z_to_gamma(50, z0 = 100) %>% expect_equal(0.3333, tolerance = 1e-3)
+	z_to_gamma(50, z0 = 100) %>% expect_equal(-0.3333, tolerance = 1e-3)
 	
 	z_to_gamma(50 + 0i,    z0 = 100) %>% expect_equal(complex(modulus = 0.3333, argument = 180    / 180 * pi), tolerance = 1e-3)
 	z_to_gamma(50 + 50i,   z0 = 100) %>% expect_equal(complex(modulus = 0.4472, argument = 116.6  / 180 * pi), tolerance = 1e-3)
