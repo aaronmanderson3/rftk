@@ -233,12 +233,12 @@ s11_to_mismatch <- function(...){
 #' @rdname impedance_conversion
 #' @export
 z_to_s11 <- function(..., z0 = 50) {
-  gamma_to_s11(z_to_gamma(..., z0 = z0))
+  gamma_to_s11(Mod(z_to_gamma(..., z0 = z0)))
 }
 
 #' @rdname impedance_conversion
 #' @export
 z_to_mismatch <- function(..., z0 = 50) {
-  gamma_to_mismatch(z_to_gamma(..., z0 = z0))
+  gamma_to_mismatch(Mod(z_to_gamma(..., z0 = z0)))
 }
 

@@ -778,3 +778,79 @@ z_to_y <- function(z, z0 = c(50, 50)) {
 
   matrix(c(y11, y21, y12, y22), ncol = 2) / denom
 }
+
+#' Input/Output Reflection Coefficient
+#' 
+#' Calculates the input and output reflection coefficients of a two-port network
+#' 
+#' @param S Network S-parameters,
+#' @param gamma_source Source reflection coefficient
+#' @param gamma_load Load reflection coefficient
+#' @return Gain value
+#'
+#' @examples
+#' S <- matrix(c(complex(modulus = 0.38, argument = -158 / 180 * pi),
+#'               complex(modulus = 0.11, argument = 54 / 180 * pi),
+#'               complex(modulus = 3.50, argument = 80 / 180 * pi),
+#'               complex(modulus = 0.40, argument = -43 / 180 * pi)), nrow = 2, byrow = TRUE)
+#'               
+#' gamma_source <- z_to_gamma(25)
+#' gamma_load <- z_to_gamma(40)
+#' 
+#' gamma_in(S, gamma_load)
+#' gamma_out(S, gamma_source)
+#' 
+#' @name network_input_output_gamma
+#' @export
+gamma_in <- function(S, gamma_load) {
+	S[1,1] + S[1,2] * S[2,1] * gamma_load / (1 - S[2,2] * gamma_load)
+}
+
+#' @rdname network_input_output_gamma
+#' @export
+gamma_out <- function(S, gamma_source) {
+	S[2,2] + S[1,2] * S[2,1] * gamma_source / (1 - S[1,1] * gamma_source)
+}
+
+
+#' Electrical Network Gain
+#'
+#' Calculates various gain metrics for a two-port network
+#'
+#' @param S Network S-parameters,
+#' @param gamma_source Source reflection coefficient
+#' @param gamma_load Load reflection coefficient
+#'
+#' @return Gain value
+#'
+#' @examples
+#' S <- matrix(c(complex(modulus = 0.38, argument = -158 / 180 * pi),
+#'               complex(modulus = 0.11, argument = 54 / 180 * pi),
+#'               complex(modulus = 3.50, argument = 80 / 180 * pi),
+#'               complex(modulus = 0.40, argument = -43 / 180 * pi)), nrow = 2, byrow = TRUE)
+#' 
+#' gamma_load <- z_to_gamma(40)
+#' gamma_source <- z_to_gamma(25)
+#' 
+#' available_gain(S, gamma_source)
+#' power_gain(S, gamma_load)
+#' transducer_gain(S, gamma_source, gamma_load)
+#' 
+#' @name network_gain
+#' @export
+available_gain <- function(S, gamma_source) {
+	Mod(S[2,1])^2 * (1 - Mod(gamma_source)^2) / Mod(1 - S[1,1] * gamma_source)^2 / (1 - Mod(gamma_out(S, gamma_source))^2)
+}
+
+#' @rdname network_gain
+#' @export
+power_gain <- function(S, gamma_load) {
+	Mod(S[2,1])^2 * (1 - Mod(gamma_load)^2) / (1 - Mod(gamma_in(S, gamma_load))^2) / Mod(1 - S[2,2] * gamma_load)^2
+}
+
+#' @rdname network_gain
+#' @export
+transducer_gain <- function(S, gamma_source, gamma_load) {
+	Mod(S[2,1])^2 * (1 - Mod(gamma_source)^2) * (1 - Mod(gamma_load)^2) / Mod(1 - gamma_source * gamma_in(S, gamma_load))^2 / Mod(1 - S[2,2] * gamma_load)^2
+}
+
