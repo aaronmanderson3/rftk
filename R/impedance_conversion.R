@@ -197,15 +197,7 @@ z_to_gamma <- function(..., z0 = 50) {
   # return empty vector if no input
   if(is.null(z))
     return(complex(0))
-  
-  # check for valid impedance
-  if(is.complex(z)) {
-    if(any(Re(z) < 0))
-      stop("The real part of the impedance must be positive")
-  }
-  else if(z < 0)
-    stop("Impedance must be positive")
-  
+
   # check for valid characteristic impedance
   if(length(z0) != 1)
     stop("Characteristic impedance must contain only one element")
