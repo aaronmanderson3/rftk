@@ -199,7 +199,7 @@ z_to_gamma <- function(..., z0 = 50) {
     return(complex(0))
   
   # check for valid impedance
-  if(Re(z) < 0)
+  if(any(Re(z) < 0))
     stop("Real impedance must be positive")
 
   # check for valid characteristic impedance
