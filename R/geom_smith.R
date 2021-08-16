@@ -1,3 +1,6 @@
+#' @include coord_smith.R
+NULL
+
 GeomSmith <- ggproto("GeomSmith", 
 										 GeomLine,
 										 default_aes = aes(colour = "black", size = 1, linetype = 1, alpha = NA),

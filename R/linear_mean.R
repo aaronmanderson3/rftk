@@ -1,3 +1,6 @@
+#' @include impedance_conversion.R
+NULL
+
 #' Linear Mean
 #' 
 #' Converts a numeric vector from decibel format to linear format, calculates the mean value, and converts back to decibel format.
