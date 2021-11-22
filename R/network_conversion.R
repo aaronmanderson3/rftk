@@ -812,6 +812,35 @@ gamma_out <- function(S, gamma_source) {
 	S[2,2] + S[1,2] * S[2,1] * gamma_source / (1 - S[1,1] * gamma_source)
 }
 
+#' Series/Shunt Impedance
+#' 
+#' Calculates the series or shunt impedance based on ABCD-parameters
+#' 
+#' @param abcd Network ABCD-parameters,
+#' @return Complex impedance
+#'
+#' @examples
+#' abcd <- matrix(c(1,
+#'                  complex(modulus = 50, argument = 0),
+#'                  complex(modulus = 200, argument = pi / 2),
+#'                  1), nrow = 2, byrow = TRUE)
+#'               
+#' z_series <- abcd_to_series_z(abcd)
+#' z_shunt <- abcd_to_shunt_z(abcd)
+#' 
+#' @name series_shunt_impedance
+#' @export
+abcd_to_series_z <- function(abcd) {
+	abcd <- coerce_params(abcd)
+	abcd[1,2]
+}
+
+#' @rdname series_shunt_impedance
+#' @export
+abcd_to_shunt_z <- function(abcd) {
+	abcd <- coerce_params(abcd)
+	abcd[2,1]
+}
 
 #' Electrical Network Gain
 #'
