@@ -231,3 +231,13 @@ test_that("network_gain", {
 	power_gain(S, gamma_load) %>% expect_equal(13.1, tolerance = 0.1)
 	transducer_gain(S, gamma_source, gamma_load) %>% expect_equal(12.6, tolerance = 0.1)
 })
+
+test_that("series/shunt impedance", {
+	abcd <- matrix(c(1, 50 + 50i, 200i, 1), nrow = 2, byrow = TRUE)
+	               
+	abcd_to_series_z(abcd) %>% expect_equal(50 + 50i)
+	abcd_to_shunt_z(abcd) %>% expect_equal(200i)
+	
+})
+
+

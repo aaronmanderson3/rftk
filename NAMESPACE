@@ -2,6 +2,8 @@
 
 export(abcd_to_h)
 export(abcd_to_s)
+export(abcd_to_series_z)
+export(abcd_to_shunt_z)
 export(abcd_to_t)
 export(abcd_to_y)
 export(abcd_to_z)
