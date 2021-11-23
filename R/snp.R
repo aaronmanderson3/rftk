@@ -207,7 +207,7 @@ read_snp <- function(...,
       summarise(s = paste(.data$value, collapse = " ")) %>%
       pull(.data$s)
     
-    data <- readr::read_table2(x, col_names = col_names_wide) %>%
+    data <- readr::read_table(x, col_names = col_names_wide) %>%
       mutate(Frequency = .data$Frequency * freq_multiplier) %>%
       tidyr::pivot_longer(-1, -1, names_to = c("Parameter", "Complex_Part"), names_sep = "_") %>%
       tidyr::pivot_wider(1:2, names_from = .data$Complex_Part, values_from = .data$value) %>%
