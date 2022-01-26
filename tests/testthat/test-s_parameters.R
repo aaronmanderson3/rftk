@@ -236,15 +236,15 @@ test_that("read_snp - results", {
 	read_snp("../test_files/Dipole_Array_S_DB.s2p")                        %>% expect_equal(s2p_expected)
 	read_snp("../test_files/Dipole_Array_S_DB_Gamma_Z0.s2p")               %>% expect_equal(s2p_expected)
 	read_snp("../test_files/Dipole_Array_S_MA.s2p", numeric_format = "DB") %>% expect_equal(s2p_expected, tolerance = 1e-5)
-	read_snp("../test_files/Dipole_Array_S_RI.S2P", numeric_format = "DB") %>% expect_equal(s2p_expected, tolerance = 1e-5)
+	read_snp("../test_files/Dipole_Array_S_RI.s2p", numeric_format = "DB") %>% expect_equal(s2p_expected, tolerance = 1e-5)
 	
 	read_snp("../test_files/Dipole_Array_S_DB.s3p")                        %>% expect_equal(s3p_expected)
 	read_snp("../test_files/Dipole_Array_S_DB_Gamma_Z0.s3p")               %>% expect_equal(s3p_expected)
 	read_snp("../test_files/Dipole_Array_S_MA.s3p", numeric_format = "DB") %>% expect_equal(s3p_expected, tolerance = 1e-5)
-	read_snp("../test_files/Dipole_Array_S_RI.S3P", numeric_format = "DB") %>% expect_equal(s3p_expected, tolerance = 1e-5)
+	read_snp("../test_files/Dipole_Array_S_RI.s3p", numeric_format = "DB") %>% expect_equal(s3p_expected, tolerance = 1e-5)
 	
 	read_snp("../test_files/Dipole_Array_S_DB.s4p")                        %>% expect_equal(s4p_expected)
 	read_snp("../test_files/Dipole_Array_S_DB_Gamma_Z0.s4p")               %>% expect_equal(s4p_expected)
 	read_snp("../test_files/Dipole_Array_S_MA.s4p", numeric_format = "DB") %>% expect_equal(s4p_expected, tolerance = 1e-5)
-	read_snp("../test_files/Dipole_Array_S_RI.S4P", numeric_format = "DB") %>% expect_equal(s4p_expected, tolerance = 1e-5)
+	read_snp("../test_files/Dipole_Array_S_RI.s4p", numeric_format = "DB") %>% expect_equal(s4p_expected, tolerance = 1e-5)
 	})
