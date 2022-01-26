@@ -148,7 +148,7 @@ read_snp <- function(...,
     files <- set_names(files)
   
   # filter files
-  bad_files <- purrr::discard(files, grepl, pattern = "s\\dp$")
+  bad_files <- purrr::discard(files, grepl, pattern = "s\\dp$", ignore.case = TRUE)
   if(length(bad_files) > 0)
     stop("Non-sNp files detected")
   
