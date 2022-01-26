@@ -96,6 +96,10 @@ test_that("read_snp - invalid arguments", {
 	expect_error(read_snp("tests/test_files/Single_Dipole_S_DB.s1p", numeric_format = "AA"))
 	expect_error(read_snp("tests/test_files/Single_Dipole_S_DB.s1p", clean_names_case = "bad_janitor"))
 })
+test_that("read_snp - upper/lower file extensions", {
+	expect_equal(read_snp("../test_files/Single_Dipole_S_DB.s1p"),
+							 read_snp("../test_files/Single_Dipole_S_DB_Upper.S1P"))
+})
 test_that("read_snp - results", {
 	s1p_expected <- tribble(~frequency,        ~db,     ~ang,
 													1.0e9,      -0.0618204, -15.7414,
