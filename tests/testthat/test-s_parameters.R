@@ -7,6 +7,14 @@ test_that("get_column_names - invalid input", {
 	expect_error(get_column_names(numeric_format = c("DB", "MA")))
 	expect_error(get_column_names(num_parameters = 0))
 })
+test_that("get_column_names - in_matrix_format", {
+	t <- get_column_names("S", "MA", 2, T)
+	f <- get_column_names("S", "MA", 2, F)
+	
+	# same names, but in different orders
+	expect_setequal(t, f)
+	expect_failure(expect_mapequal(t, f))
+})
 test_that("get_column_names - results", {
 	get_column_names("S", "MA", 1) %>% expect_equal(c("Frequency", "S11_Mag", "S11_Ang"))
 	get_column_names("Y", "MA", 1) %>% expect_equal(c("Frequency", "Y11_Mag", "Y11_Ang"))
@@ -93,12 +101,33 @@ test_that("read_snp - empty arguments", {
 })
 test_that("read_snp - invalid arguments", {
 	expect_error(read_snp("bad_s1p_file.txt"))
-	expect_error(read_snp("tests/test_files/Single_Dipole_S_DB.s1p", numeric_format = "AA"))
-	expect_error(read_snp("tests/test_files/Single_Dipole_S_DB.s1p", clean_names_case = "bad_janitor"))
+	expect_error(read_snp("../test_files/Single_Dipole_S_DB.s1p", numeric_format = "AA"))
+	expect_error(read_snp("../test_files/Single_Dipole_S_DB.s1p", clean_names_case = "bad_janitor"))
 })
 test_that("read_snp - upper/lower file extensions", {
 	expect_equal(read_snp("../test_files/Single_Dipole_S_DB.s1p"),
 							 read_snp("../test_files/Single_Dipole_S_DB_Upper.S1P"))
+})
+test_that("read_snp - inline comments", {
+	t <- read_snp("../test_files/Dipole_Array_S_DB_With_Inline_Comment.s4p")
+	f <- read_snp("../test_files/Dipole_Array_S_DB.s4p")
+	
+	expect_equal(t, f)
+})
+test_that("read_snp - 2-port in_matrix_format", {
+	t <- read_snp("../test_files/Dipole_Array_S_DB_Matrix_Format.s2p")
+	f <- read_snp("../test_files/Dipole_Array_S_DB.s2p")
+	
+	expect_equal(
+		arrange(t, parameter), 
+		arrange(f, parameter)
+	)
+})
+test_that("read_snp - 3+ port file single/multi line formats", {
+	expect_equal(read_snp("../test_files/Dipole_Array_S_DB.s4p"),
+							 read_snp("../test_files/Dipole_Array_S_DB_Single_Line.s4p"))
+	expect_equal(read_snp("../test_files/Dipole_Array_S_DB.s4p"),
+							 read_snp("../test_files/Dipole_Array_S_DB_Mixed_Line.s4p"))
 })
 test_that("read_snp - results", {
 	s1p_expected <- tribble(~frequency,        ~db,     ~ang,
