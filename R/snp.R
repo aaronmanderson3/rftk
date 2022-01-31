@@ -11,7 +11,7 @@
 #' # output: "Frequency" "S11_Mag"   "S11_Ang"   "S21_Mag"   "S21_Ang"   "S12_Mag"   "S12_Ang"
 #' #  "S22_Mag"   "S22_Ang"
 #' @keywords internal
-get_column_names <- function(parameter = "S", numeric_format, num_parameters) {
+get_column_names <- function(parameter = "S", numeric_format, num_parameters, in_matrix_format = FALSE) {
   
   # coerce inputs
   parameter <- toupper(parameter)
@@ -37,7 +37,7 @@ get_column_names <- function(parameter = "S", numeric_format, num_parameters) {
                              "DB" = c("dB", "Ang"),
                              "RI" = c("Re", "Im"))
   
-  if(num_parameters == 2) {
+  if(num_parameters == 2 && !in_matrix_format) {
     # s2p files are a special case
     col_names <- c(paste0(parameter, "11_", parameter_suffix),
                    paste0(parameter, "21_", parameter_suffix),
