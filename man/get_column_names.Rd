@@ -4,7 +4,12 @@
 \alias{get_column_names}
 \title{S-Parameter Column Names}
 \usage{
-get_column_names(parameter = "S", numeric_format, num_parameters)
+get_column_names(
+  parameter = "S",
+  numeric_format,
+  num_parameters,
+  in_matrix_format = FALSE
+)
 }
 \arguments{
 \item{parameter}{Type of parameter file (valid options = S, Y, Z)}
@@ -12,6 +17,8 @@ get_column_names(parameter = "S", numeric_format, num_parameters)
 \item{numeric_format}{Numeric format used (valid options = MA, DB, RI)}
 
 \item{num_parameters}{Number of parameters}
+
+\item{in_matrix_format}{For 2-parameter files only - whether the file is in matrix format or not (i.e. whether it should flip S21/S12)}
 }
 \description{
 Outputs the columns names of a .sNp file based on parameter, numeric format,
