@@ -156,7 +156,6 @@ read_snp <- function(...,
 
     num_params <- substr(file, nchar(file) - 1, nchar(file) - 1) %>% as.integer
     
-    
     # read all lines
     x <- readr::read_lines(file, 
                            skip_empty_rows = T) %>%
@@ -167,14 +166,23 @@ read_snp <- function(...,
     if(length(noise_parameters_index) != 0)
       x <- x[1:noise_parameters_index - 1]
     
+    # remove comment lines
+    x <- grep("^\\s*!", x, value = T, invert = T)
+    
+    # remove inline comments
+    x <- gsub("!.*", "", x)
+    
     # trim whitespace
     x <- trimws(x)
     
-    # remove other comments (starting with !)
-    x <- x[which(!startsWith(x, "!"))]
-    
     # read header
     header <- x[1]
+    
+    # remove header
+    x <- x[-1]
+    
+    # split all
+    x <- strsplit(x, "\\s+")
     
     # Split the header by whitespace
     header <- strsplit(header, "\\s+") %>%
@@ -192,34 +200,39 @@ read_snp <- function(...,
     # get column names
     col_names_wide <- get_column_names(parameter = header[3],
                                        numeric_format = header[4],
-                                       num_parameters = num_params)
+                                       num_parameters = num_params,
+                                       in_matrix_format = n_distinct(map_int(x, length)) > 1)
     
-    col_names_long <- sub(".+_", "", col_names_wide) %>% unique
+    # collapse list of space-split into a single vector
+    x <- unlist(x)
     
-    # remove header
-    x <- x[-1]
+    # convert data to numeric
+    x <- as.numeric(x)
     
-    if(num_params > 2) 
-      x <- as_tibble(x) %>% 
-      tibble::rowid_to_column("index") %>%
-      mutate(index = ceiling(.data$index / num_params)) %>%
-      group_by(.data$index) %>%
-      summarise(s = paste(.data$value, collapse = " ")) %>%
-      pull(.data$s)
+    # convert vector into a matrix
+    # each row is all s-parameters per frequency
+    x <- matrix(x, byrow = T, ncol = length(col_names_wide))
     
-    data <- readr::read_table(x, col_names = col_names_wide) %>%
+    # set column names	
+    colnames(x) <- col_names_wide
+    
+    # convert to a tibble
+    x <- as_tibble(x)
+    
+    # apply frequency multiplier
+    x <- x %>% 
       mutate(Frequency = .data$Frequency * freq_multiplier) %>%
-      tidyr::pivot_longer(-1, -1, names_to = c("Parameter", "Complex_Part"), names_sep = "_") %>%
-      tidyr::pivot_wider(1:2, names_from = .data$Complex_Part, values_from = .data$value) %>%
+      tidyr::pivot_longer(-1, names_to = c("Parameter", "Complex"), names_sep = "_") %>%
+      tidyr::pivot_wider(names_from = "Complex") %>%
       relocate(.data$Parameter)
     
     if(!is.null(numeric_format))
-      data <- change_snp_numeric_type(data, numeric_format)
+      x <- change_snp_numeric_type(x, numeric_format)
     
     if(!is.null(clean_names_case))
-      data <- janitor::clean_names(data, case = clean_names_case)
+      x <- janitor::clean_names(x, case = clean_names_case)
     
-    return(data)
+    x
     
   }, .id = "filepath") %>%
     janitor::remove_constant()
