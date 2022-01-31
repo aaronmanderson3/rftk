@@ -6,6 +6,7 @@
 #' @param parameter Type of parameter file (valid options = S, Y, Z)
 #' @param numeric_format Numeric format used (valid options = MA, DB, RI)
 #' @param num_parameters Number of parameters
+#' @param in_matrix_format For 2-parameter files only - whether the file is in matrix format or not (i.e. whether it should flip S21/S12)
 #' @examples
 #' rftk:::get_column_names("S", "MA", 2)
 #' # output: "Frequency" "S11_Mag"   "S11_Ang"   "S21_Mag"   "S21_Ang"   "S12_Mag"   "S12_Ang"
