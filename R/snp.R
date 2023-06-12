@@ -176,6 +176,9 @@ read_snp <- function(...,
     # trim whitespace
     x <- trimws(x)
     
+    # `trimws` will coerce empty lines into NA lines, remove these
+    x <- x[!is.na(x)]
+    
     # read header
     header <- x[1]
     
