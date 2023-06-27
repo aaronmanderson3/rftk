@@ -60,7 +60,7 @@ Supported \code{purrr} mapping functions:
 \item{\link[purrr:map]{purrr::map}}{Call \code{.f} using an argument of \code{.x}}
 \item{\link[purrr:map2]{purrr::map2}}{Call \code{.f} using arguments of \code{.x} and \code{.y}}
 \item{\link[purrr:imap]{purrr::imap}}{Call \code{.f} using arguments of \code{.x} and \code{names(.x)}}
-\item{\link[purrr:map2]{purrr::pmap}}{Call \code{.f} using arguments contained in \code{.l}}
+\item{\link[purrr:pmap]{purrr::pmap}}{Call \code{.f} using arguments contained in \code{.l}}
 }
 }
 \seealso{

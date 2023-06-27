@@ -40,15 +40,16 @@ get_column_names <- function(parameter = "S", numeric_format, num_parameters, in
   
   if(num_parameters == 2 && !in_matrix_format) {
     # s2p files are a special case
-    col_names <- c(paste0(parameter, "11_", parameter_suffix),
-                   paste0(parameter, "21_", parameter_suffix),
-                   paste0(parameter, "12_", parameter_suffix),
-                   paste0(parameter, "22_", parameter_suffix))
+    col_names <- c(paste0(parameter, "_1_1_", parameter_suffix),
+                   paste0(parameter, "_2_1_", parameter_suffix),
+                   paste0(parameter, "_1_2_", parameter_suffix),
+                   paste0(parameter, "_2_2_", parameter_suffix))
   }
   else {
-    col_names <- paste0(parameter,
+    col_names <- paste(sep = "_",
+    									 parameter,
                         expand.grid(1:num_parameters,1:num_parameters) %>%
-                          transmute(paste0(.data$Var2,.data$Var1)) %>%
+                          transmute(paste(sep = "_", .data$Var2,.data$Var1)) %>%
                           pull()) %>%
       map(paste, parameter_suffix, sep = "_") %>%
       unlist
@@ -120,7 +121,7 @@ change_snp_numeric_type <- function(data, format) {
                                      Re = NULL,
                                      Im = NULL))) %>%
     relocate(any_of(c("Mag", "dB", "Ang", "Re", "Im")), 
-             .after = "Frequency")
+             .after = any_of(c("Frequency", "Parameter")))
 }
 
 #' Read Touchstone .sNp file into tibble
@@ -129,6 +130,7 @@ change_snp_numeric_type <- function(data, format) {
 #'
 #' @param ... Files to read
 #' @param numeric_format Output format.  Can be "DB" for dB Mag/Angle, "MA" for Mag/Angle, "RI" for Real/Imaginary, or NA for no conversion.
+#' @param simplify_param Option to simplify `parameter` output column - `TRUE` to convert to Snn format.  Not used for files with 10+ parameters.
 #' @param clean_names_case Type of character casing to reformat the column names into.  Set to \code{NULL} for no reformatting, and see \code{\link[janitor]{clean_names}} for more details.
 #' @examples
 #' read_snp(rftk_example("dipole.s1p"))
@@ -136,6 +138,7 @@ change_snp_numeric_type <- function(data, format) {
 #' @export
 read_snp <- function(...,
                      numeric_format = "DB",
+										 simplify_param = TRUE,
                      clean_names_case = "old_janitor") {
   
   files <- unlist(list(...))
@@ -149,13 +152,13 @@ read_snp <- function(...,
     files <- set_names(files)
   
   # filter files
-  bad_files <- purrr::discard(files, grepl, pattern = "s\\dp$", ignore.case = TRUE)
+  bad_files <- purrr::discard(files, grepl, pattern = "s\\d+p$", ignore.case = TRUE)
   if(length(bad_files) > 0)
     stop("Non-sNp files detected")
   
   map_dfr(files, function(file) {
 
-    num_params <- substr(file, nchar(file) - 1, nchar(file) - 1) %>% as.integer
+    num_params <- substr(file, regexec("\\d+p$", file, ignore.case = T), nchar(file) - 1) %>% as.integer
     
     # read all lines
     x <- readr::read_lines(file, 
@@ -226,9 +229,15 @@ read_snp <- function(...,
     # apply frequency multiplier
     x <- x %>% 
       mutate(Frequency = .data$Frequency * freq_multiplier) %>%
-      tidyr::pivot_longer(-1, names_to = c("Parameter", "Complex"), names_sep = "_") %>%
-      tidyr::pivot_wider(names_from = "Complex") %>%
-      relocate(.data$Parameter)
+      tidyr::pivot_longer(-1, names_to = c("Parameter", "Output", "Input", "Complex"), names_sep = "_") %>%
+      tidyr::pivot_wider(names_from = "Complex") |> 
+    	mutate(Parameter = paste0(.data$Parameter, "[", .data$Output, ",", .data$Input, "]"),
+    				 .keep = "unused",
+    				 .before = 0)
+    
+    # simplify parameter
+    if(simplify_param && num_params < 10)
+    	x <- mutate(x, Parameter = gsub("\\W", "", .data$Parameter))
     
     if(!is.null(numeric_format))
       x <- change_snp_numeric_type(x, numeric_format)
@@ -241,3 +250,4 @@ read_snp <- function(...,
   }, .id = "filepath") %>%
     janitor::remove_constant()
 }
+
