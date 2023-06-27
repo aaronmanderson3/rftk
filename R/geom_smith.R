@@ -3,7 +3,7 @@ NULL
 
 GeomSmith <- ggproto("GeomSmith", 
 										 GeomLine,
-										 default_aes = aes(colour = "black", size = 1, linetype = 1, alpha = NA),
+										 default_aes = aes(colour = "black", linewidth = 1, linetype = 1, alpha = NA),
 										 required_aes = c("freq", "smag", "sang"),
 										 setup_data = function(data, params) {
 										 	
