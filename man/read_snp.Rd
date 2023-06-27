@@ -4,12 +4,19 @@
 \alias{read_snp}
 \title{Read Touchstone .sNp file into tibble}
 \usage{
-read_snp(..., numeric_format = "DB", clean_names_case = "old_janitor")
+read_snp(
+  ...,
+  numeric_format = "DB",
+  simplify_param = TRUE,
+  clean_names_case = "old_janitor"
+)
 }
 \arguments{
 \item{...}{Files to read}
 
 \item{numeric_format}{Output format.  Can be "DB" for dB Mag/Angle, "MA" for Mag/Angle, "RI" for Real/Imaginary, or NA for no conversion.}
+
+\item{simplify_param}{Option to simplify \code{parameter} output column - \code{TRUE} to convert to Snn format.  Not used for files with 10+ parameters.}
 
 \item{clean_names_case}{Type of character casing to reformat the column names into.  Set to \code{NULL} for no reformatting, and see \code{\link[janitor]{clean_names}} for more details.}
 }
