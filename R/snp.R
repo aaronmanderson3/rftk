@@ -40,15 +40,16 @@ get_column_names <- function(parameter = "S", numeric_format, num_parameters, in
   
   if(num_parameters == 2 && !in_matrix_format) {
     # s2p files are a special case
-    col_names <- c(paste0(parameter, "11_", parameter_suffix),
-                   paste0(parameter, "21_", parameter_suffix),
-                   paste0(parameter, "12_", parameter_suffix),
-                   paste0(parameter, "22_", parameter_suffix))
+    col_names <- c(paste0(parameter, "_1_1_", parameter_suffix),
+                   paste0(parameter, "_2_1_", parameter_suffix),
+                   paste0(parameter, "_1_2_", parameter_suffix),
+                   paste0(parameter, "_2_2_", parameter_suffix))
   }
   else {
-    col_names <- paste0(parameter,
+    col_names <- paste(sep = "_",
+    									 parameter,
                         expand.grid(1:num_parameters,1:num_parameters) %>%
-                          transmute(paste0(.data$Var2,.data$Var1)) %>%
+                          transmute(paste(sep = "_", .data$Var2,.data$Var1)) %>%
                           pull()) %>%
       map(paste, parameter_suffix, sep = "_") %>%
       unlist
@@ -226,9 +227,15 @@ read_snp <- function(...,
     # apply frequency multiplier
     x <- x %>% 
       mutate(Frequency = .data$Frequency * freq_multiplier) %>%
-      tidyr::pivot_longer(-1, names_to = c("Parameter", "Complex"), names_sep = "_") %>%
-      tidyr::pivot_wider(names_from = "Complex") %>%
-      relocate(.data$Parameter)
+      tidyr::pivot_longer(-1, names_to = c("Parameter", "Output", "Input", "Complex"), names_sep = "_") %>%
+      tidyr::pivot_wider(names_from = "Complex") |> 
+    	mutate(Parameter = paste0(.data$Parameter, "[", .data$Output, ",", .data$Input, "]"),
+    				 .keep = "unused",
+    				 .before = 0)
+    
+    # simplify parameter
+    if(simplify_param && num_params < 10)
+    	x <- mutate(x, Parameter = gsub("\\W", "", .data$Parameter))
     
     if(!is.null(numeric_format))
       x <- change_snp_numeric_type(x, numeric_format)
