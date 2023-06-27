@@ -121,7 +121,7 @@ change_snp_numeric_type <- function(data, format) {
                                      Re = NULL,
                                      Im = NULL))) %>%
     relocate(any_of(c("Mag", "dB", "Ang", "Re", "Im")), 
-             .after = "Frequency")
+             .after = any_of(c("Frequency", "Parameter")))
 }
 
 #' Read Touchstone .sNp file into tibble
@@ -130,6 +130,7 @@ change_snp_numeric_type <- function(data, format) {
 #'
 #' @param ... Files to read
 #' @param numeric_format Output format.  Can be "DB" for dB Mag/Angle, "MA" for Mag/Angle, "RI" for Real/Imaginary, or NA for no conversion.
+#' @param simplify_param Option to simplify `parameter` output column - `TRUE` to convert to Snn format.  Not used for files with 10+ parameters.
 #' @param clean_names_case Type of character casing to reformat the column names into.  Set to \code{NULL} for no reformatting, and see \code{\link[janitor]{clean_names}} for more details.
 #' @examples
 #' read_snp(rftk_example("dipole.s1p"))
@@ -137,6 +138,7 @@ change_snp_numeric_type <- function(data, format) {
 #' @export
 read_snp <- function(...,
                      numeric_format = "DB",
+										 simplify_param = TRUE,
                      clean_names_case = "old_janitor") {
   
   files <- unlist(list(...))
@@ -150,13 +152,13 @@ read_snp <- function(...,
     files <- set_names(files)
   
   # filter files
-  bad_files <- purrr::discard(files, grepl, pattern = "s\\dp$", ignore.case = TRUE)
+  bad_files <- purrr::discard(files, grepl, pattern = "s\\d+p$", ignore.case = TRUE)
   if(length(bad_files) > 0)
     stop("Non-sNp files detected")
   
   map_dfr(files, function(file) {
 
-    num_params <- substr(file, nchar(file) - 1, nchar(file) - 1) %>% as.integer
+    num_params <- substr(file, regexec("\\d+p$", file, ignore.case = T), nchar(file) - 1) %>% as.integer
     
     # read all lines
     x <- readr::read_lines(file, 
@@ -248,3 +250,4 @@ read_snp <- function(...,
   }, .id = "filepath") %>%
     janitor::remove_constant()
 }
+
