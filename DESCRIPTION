@@ -13,9 +13,14 @@ Imports:
 	dplyr,
 	purrr,
 	readr,
+	magrittr,
+	stringr,
+	rlang,
+	grid,
 	tidyr,
 	janitor,
-	scales
+	scales,
+	stats
 Suggests:
 	testthat,
 	tibble
